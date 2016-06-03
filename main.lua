@@ -3,7 +3,7 @@ local ntp = require('ntp')
 
 TOPIC = "/sensors/"..LOCATION.."/mq2/data"
 
-gpio.mode(DATA_PIN, gpio.INPUT)
+gpio.mode(4, gpio.INPUT)
 
 -- Init client with keepalive timer 120sec
 m = mqtt.Client(CLIENT_ID, 120, "", "")
