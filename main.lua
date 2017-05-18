@@ -8,7 +8,10 @@ gpio.mode(4, gpio.INPUT)
 -- Init client with keepalive timer 120sec
 m = mqtt.Client(CLIENT_ID, 120, "", "")
 
--- Sync to NTP server
+ip = wifi.sta.getip()
+
+m:lwt("/offline", '{"message":"'..CLIENT_ID..'", "topic":"'..TOPIC..'", "ip":"'..ip..'"}', 0, 0)
+
 ntp.sync()
 
 function readData() 
@@ -22,7 +25,7 @@ m:connect(BROKER_IP, BROKER_PORT, 0, 1, function(conn)
     print("Connected to MQTT: "..BROKER_IP..":"..BROKER_PORT.." as "..CLIENT_ID)
     tmr.alarm(1, REFRESH_RATE, 1, function()
         GAZ = readData()
-        DATA = '{"mac":"'..wifi.sta.getmac()..'","ip":"'..wifi.sta.getip()..'",'
+        DATA = '{"mac":"'..wifi.sta.getmac()..'","ip":"'..ip..'",'
         DATA = DATA..'"date":"'..ntp.date()..'","time":"'..ntp.time()..'",'
         DATA = DATA..'"gaz":"'..GAZ..'"}'
         -- Publish a message (QoS = 0, retain = 0)       
